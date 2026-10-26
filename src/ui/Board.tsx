@@ -4,6 +4,7 @@ import { checkCoup, dominant, dominatedCount, favori, income, lobbyTokens, prese
 import type { Command, GameState, Gauge, ProjectCard, RegionId } from "../engine/types";
 import type { PlayerView } from "../engine/view";
 import { CardView } from "./CardView";
+import { Tutorial } from "./Tutorial";
 
 type VP = PlayerView["players"][number];
 
@@ -28,6 +29,7 @@ export function Board({ view, send, clockOffset, onLeave }: { view: PlayerView; 
   const [selected, setSelected] = useState<string | null>(null);
   const [lobbyRegion, setLobbyRegion] = useState<RegionId>(view.regions[0]);
   const [lobbyAmount, setLobbyAmount] = useState(1);
+  const [tuto, setTuto] = useState(false);
   useEffect(() => setSelected(null), [view.turnIndex, view.year]);
   useEffect(() => setLobbyAmount((a) => Math.max(1, Math.min(a, me.amis || 1))), [me.amis]);
 
@@ -66,12 +68,16 @@ export function Board({ view, send, clockOffset, onLeave }: { view: PlayerView; 
             </>
           )}
         </div>
+        <button className="small" onClick={() => setTuto(true)}>📖 Règles</button>
         <button className="ghost small" onClick={() => confirm("Quitter la partie ?") && onLeave()}>Quitter</button>
       </header>
       {view.nextEvent && <div className="insider">🔎 Gougle sait déjà que l'an prochain : <strong>{EVENTS[view.nextEvent].name}</strong></div>}
       {view.pending && !pendingForMe && (
         <div className="banner">🗡️ {name(view.players.find((p) => p.id === view.pending!.actor))} joue « {CARDS[view.pending.card].name} » contre {name(view.players.find((p) => p.id === view.pending!.target))}… qui peut riposter.</div>
       )}
+
+      {/* une riposte en attente passe avant la lecture des règles */}
+      {tuto && !pendingForMe && <Tutorial onClose={() => setTuto(false)} />}
 
       <div className="main">
         {/* ------------------------------------------------ joueurs */}

@@ -2,12 +2,14 @@ import { useState } from "react";
 import { CEOS } from "../engine/data";
 import type { CeoId, Command } from "../engine/types";
 import type { PlayerView } from "../engine/view";
+import { Tutorial } from "./Tutorial";
 
 export function Lobby({ view, send, onLeave }: { view: PlayerView; send: (c: Command) => void; onLeave: () => void }) {
   const me = view.players.find((p) => p.id === view.me);
   const isHost = view.me === view.hostId;
   const link = `${location.origin}${location.pathname}?salle=${view.code}`;
   const [copied, setCopied] = useState(false);
+  const [tuto, setTuto] = useState(false);
   const missing = view.players.filter((p) => !p.ceo).length;
   return (
     <div className="lobby">
@@ -19,8 +21,10 @@ export function Lobby({ view, send, onLeave }: { view: PlayerView; send: (c: Com
         <button onClick={() => { navigator.clipboard?.writeText(link); setCopied(true); setTimeout(() => setCopied(false), 2000); }}>
           {copied ? "Lien copié ✓" : "Copier le lien d'invitation"}
         </button>
+        <button onClick={() => setTuto(true)}>📖 Règles</button>
         <button className="ghost" onClick={onLeave}>Quitter</button>
       </header>
+      {tuto && <Tutorial onClose={() => setTuto(false)} />}
 
       <section>
         <h2>Les joueurs ({view.players.length}/8)</h2>

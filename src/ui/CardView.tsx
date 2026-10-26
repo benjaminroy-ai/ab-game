@@ -14,7 +14,7 @@ export function CardView({ id, onClick, disabled, selected, hint }: { id: string
         <>
           <div className="card-cost">
             <span>💰 {c.capital}</span>
-            {c.genie > 0 && <span>🔬 {c.genie}</span>}
+            {c.genie > 0 && <span title="Génie">🧠 {c.genie}</span>}
             {c.minTech > 1 && <span className="muted">Tech {c.minTech}+</span>}
           </div>
           <div className="card-gain">

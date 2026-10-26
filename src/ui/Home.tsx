@@ -1,8 +1,10 @@
 import { useState } from "react";
+import { Tutorial } from "./Tutorial";
 
 export function Home({ onCreate, onJoin, initialCode, error }: { onCreate: (name: string) => void; onJoin: (code: string, name: string) => void; initialCode: string; error: string | null }) {
   const [name, setName] = useState(localStorage.getItem("abgame-name") || "");
   const [code, setCode] = useState(initialCode);
+  const [tuto, setTuto] = useState(() => new URLSearchParams(location.search).has("tutoriel"));
   const ready = name.trim().length > 0;
   const remember = () => localStorage.setItem("abgame-name", name.trim());
   return (
@@ -32,7 +34,9 @@ export function Home({ onCreate, onJoin, initialCode, error }: { onCreate: (name
         </div>
         {error && <div className="error">{error}</div>}
       </div>
+      <button className="home-tuto" onClick={() => setTuto(true)}>📖 Apprendre à jouer (tutoriel, 5 min)</button>
       <p className="muted small">2 à 8 joueurs · environ 30 minutes à 3 · chacun sur son écran</p>
+      {tuto && <Tutorial onClose={() => setTuto(false)} />}
     </div>
   );
 }
